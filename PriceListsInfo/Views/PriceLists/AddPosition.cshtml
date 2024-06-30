@@ -1,0 +1,46 @@
+﻿@model PriceListsInfo.Models.PriceList
+
+@{
+    ViewData["Title"] = "Add Position";
+}
+
+<div class="container mt-5">
+    <h1 class="mb-4">Добавить позицию</h1>
+
+    <form asp-action="AddPosition" method="post">
+        <input type="hidden" name="priceListId" value="@Model.Id" />
+        @{
+            var rowIndex = Model.Columns.SelectMany(c => c.Values).Any() ? Model.Columns.SelectMany(c => c.Values).Max(v => v.RowIndex) + 1 : 0;
+        }
+        <input type="hidden" name="rowIndex" value="@rowIndex" />
+
+        @foreach (var column in Model.Columns)
+        {
+            <div class="row mb-3">
+                <div class="col-5">
+                    <div class="input-group">
+                        <span class="input-group-text">@column.ColumnName</span>
+                        @if (column.ColumnType == ColumnType.Number)
+                        {
+                            <input id="column-@column.Id" name="values[@column.Id]" type="number" class="form-control" required min="0" />
+                        }
+                        else if (column.ColumnType == ColumnType.SingleLineText)
+                        {
+                            <input id="column-@column.Id" name="values[@column.Id]" type="text" class="form-control" required />
+                        }
+                        else if (column.ColumnType == ColumnType.MultiLineText)
+                        {
+                            <textarea id="column-@column.Id" name="values[@column.Id]" class="form-control" required ></textarea>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+            <a href="@Url.Action("DetailsPriceList", new { id = Model.Id })" class="btn btn-secondary ml-2">Назад</a>
+        </div>
+    </form>
+</div>
+<script src="~/js/site.js" asp-append-version="true"></script>

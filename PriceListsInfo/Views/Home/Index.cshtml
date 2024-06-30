@@ -1,0 +1,95 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+    var allPriceLists = ViewBag.AllPriceLists as IEnumerable<PriceListsInfo.Models.PriceList>;
+}
+
+@model PriceListsInfo.Models.PriceList
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="h1"><strong>Добавление прайс-листа</strong></div>
+        </div>
+        <form id="priceListForm" asp-action="Index" method="post">
+            <div class="row mb-3">
+                <div class="col-1">
+                    <button type="submit" class="text-center p-2 btn btn-success">Продолжить</button>
+                </div>
+                <div class="col-2 mx-3">
+                    <a href="@Url.Action("ViewAllPriceLists", "PriceLists")" class="text-center p-2 btn btn-primary">Назад к списку</a>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-5">
+                    <div class="input-group">
+                        <span class="input-group-text">Название</span>
+                        <input id="name" name="Name" type="text" class="form-control" />
+                        <span id="nameError" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-5">
+                    <div class="input-group">
+                        <span class="input-group-text">Дата создания</span>
+                        <input id="date" name="Date" type="date" class="form-control" placeholder="23.06.2024" />
+                        <span id="dateError" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div id="columns">
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="priceList" class="form-label">Выберите прайс-лист:</label>
+                        <div class="input-group">
+                            <select id="priceList" name="selectedPriceListId" class="form-select">
+                                @foreach (var priceList in ViewBag.AllPriceLists as IEnumerable<PriceListsInfo.Models.PriceList>)
+                                {
+                                    <option value="@priceList.Id">@priceList.Name</option>
+                                }
+                            </select>
+                            <button type="submit" class="no-validation" formaction="@Url.Action("SelectPriceList")">Submit</button
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @if (ViewBag.SelectedPriceList != null)
+            {
+                var selectedPriceList = ViewBag.SelectedPriceList as PriceListsInfo.Models.PriceList;
+                @for (int i = 0; i < selectedPriceList.Columns.Count; i++)
+                {
+                    var column = ViewBag.SelectedPriceList.Columns[i];
+                    if (column.ColumnName != "Название товара" && column.ColumnName != "Код товара")
+                    {
+                        <div class="row mb-3 column-item">
+                            <div class="col-5">
+                                <div class="input-group">
+                                    <span class="input-group-text">Название колонки</span>
+                                    <input name="Columns[@i].ColumnName" type="text" class="form-control" value="@column.ColumnName" required />
+                                </div>
+                            </div>
+                            <div class="col-5">
+                                <div class="input-group">
+                                    <span class="input-group-text">Тип колонки</span>
+                                    <input name="Columns[@i].ColumnType" type="text" class="form-control" value="@column.ColumnType" required />
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <div class="text-center p-2 btn btn-danger remove-column-btn" onclick="removeColumn(this)">Удалить</div>
+                            </div>
+                        </div>
+                        
+                    }
+                }
+            }
+        </form>
+        
+        </div>
+    <button id="add-column-btn" class="btn btn-warning mb-3 col-2">Добавить колонку</button>
+    </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>

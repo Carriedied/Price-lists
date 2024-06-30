@@ -1,0 +1,55 @@
+﻿@model PriceListsInfo.Models.PriceList
+
+@{
+    ViewData["Title"] = "Details price list";
+}
+
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-4"><strong>Детали прайс-листа</strong></h1>
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col">
+            <h2>@Model.Name</h2>
+            <p><strong>Дата создания:</strong> @Model.Date.ToString("dd.MM.yyyy")</p>
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col">
+            <table class="table table-bordered table-hover" id="priceListTable">
+                <thead class="thead-light">
+                    <tr>
+                        @foreach (var column in Model.Columns)
+                        {
+                            <th scope="col" data-column="@column.ColumnName" data-sort-order="asc">@column.ColumnName</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int maxRows = Model.Columns.Max(c => c.Values.Count);
+
+                        for (int i = 0; i < maxRows; i++)
+                        {
+                            <tr>
+                                @foreach (var column in Model.Columns)
+                                {
+                                    <td>@(i < column.Values.Count ? column.Values[i].Value : string.Empty)</td>
+                                }
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col d-flex justify-content-between">
+            <a href="@Url.Action("ViewAllPriceLists", "PriceLists")" class="btn btn-primary">Назад к списку</a>
+            <a href="@Url.Action("AddPosition", "PriceLists", new { priceListId = Model.Id })" class="btn btn-success">Добавить позицию</a>
+        </div>
+    </div>
+</div>
+<script src="~/js/site.js" asp-append-version="true"></script>

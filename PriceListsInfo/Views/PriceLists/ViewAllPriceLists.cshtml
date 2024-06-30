@@ -1,0 +1,47 @@
+﻿@{
+    ViewData["Title"] = "PriceLists";
+}
+
+@model IEnumerable<PriceListsInfo.Models.PriceList>
+
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-4"><strong>Список всех прайс-листов</strong></h1>
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col">
+            <table class="table table-bordered table-hover">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col">Номер</th>
+                        <th scope="col">Название</th>
+                        <th scope="col">Дата создания</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var priceList in Model)
+                    {
+                        <tr>
+                            <th scope="row">@priceList.Id</th>
+                            <td>
+                                <a href="@Url.Action("DetailsPriceList", "PriceLists", new { id = priceList.Id })">
+                                    @priceList.Name
+                                </a>
+                            </td>
+                            <td>@priceList.Date.ToString("dd.MM.yyyy")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col d-flex justify-content-end">
+            <form action="@Url.Action("Index", "Home")" method="get">
+                <button type="submit" class="btn btn-success">Добавить новый прайс-лист</button>
+            </form>
+        </div>
+    </div>
+</div>
